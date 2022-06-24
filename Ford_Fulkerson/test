@@ -1,0 +1,65 @@
+1: 2 3 7 
+2: 3 4
+3: 1 5 9
+4: 5 6 7
+5: 6
+6: 5 8 9
+7:
+8:
+9: 5 10
+10:
+
+
+
+1: 2 3 7
+2: 3 4
+3: 1 5 9
+4: 7 5 6
+5: 6 3
+6: 8 5 9
+7:
+8:
+9: 10 5 10
+10:
+
+
+// Coloco o vértice inicial como true
+    G->v_vertices[initial_v].seen = true;
+    if (initial_v == final_v){
+        return true;
+    }
+    // Faço o print do vertice inicial, mostrando ao final a ordem de visitação dos vértices
+    //cout << "Init " << initial_v << endl;
+    // Dentro da minha lista de adjacência, vou trabalhar somente com a lista do vertice "initial_v"
+    // Dessa forma, usarei somente o vector dele, dentro do meu vector de vectors
+    int n_vertices = G->adj_list[initial_v - 1].size();
+    for (int i = 0; i < n_vertices; i++) {
+        // Aqui eu somente estou guardando o indice do vértice para usar de forma mais clara depois
+        int v_index = G->adj_list[initial_v - 1][i].target;
+        // Caso o vértice não tenha sido visitado
+        //cout << "Proximo? " << v_index << endl;
+        if(G->adj_list[initial_v - 1][i].full == true){
+            //cout << "Esgotado no DFS" << endl;
+            continue;
+        }
+        if (G->v_vertices[v_index].seen == false){
+            // Faço com que a aresta entre o vertice inicial e o vértice vizinho seja marcado como 
+            // visitado
+            G->adj_list[initial_v - 1][i].seen = true;
+            G->v_vertices[v_index - 1].parent = initial_v;
+            //setEdgeSeen (G, initial_v, i);
+            // E faço a chamada recursiva, passando agora o vértice vizinho como vértice inicial
+            DFS (G, v_index, final_v);
+            
+                
+        }
+        else {
+            // Caso contrário, faço com que, caso a aresta entre o vértice inicial e o vertice vizinho
+            // seja marcado como visitado
+            if (G->getEdgeSeen(initial_v, i) == false || G->adj_list[initial_v - 1][i].seen == false){
+                setEdgeSeen(G, initial_v, i);
+                G->adj_list[initial_v - 1][i].seen = true;
+            }
+        }
+    }
+    return G->v_vertices[final_v - 1].seen;
